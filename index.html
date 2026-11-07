@@ -252,8 +252,9 @@ async function api(action, payload) {
   try {
     res = await fetch('/api', { method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(Object.assign({ action, token }, payload || {})) });
+    if (res.status === 404) throw new Error('API not found (404). The /api folder was not deployed on Vercel.');
     j = await res.json();
-  } catch (e) { throw new Error('Could not reach the server. Please try again.'); }
+  } catch (e) { throw new Error(e.message.indexOf('API not found') === 0 ? e.message : 'Could not reach the server. Please try again.'); }
   if (!j.ok) throw new Error(j.error || 'Something went wrong.');
   return j.data;
 }
