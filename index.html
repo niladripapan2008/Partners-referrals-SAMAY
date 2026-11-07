@@ -95,7 +95,8 @@
   th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
   tr:last-child td{border:0}.r{text-align:right}
   .tag{padding:4px 12px;border-radius:99px;font-size:12px;font-weight:700;box-shadow:var(--in)}
-  .t-Pending{color:var(--amber)}.t-Received,.t-Approved{color:var(--green)}.t-Cancelled,.t-Rejected{color:var(--red)}
+  .t-Pending{color:var(--amber)}.t-Received,.t-Approved{color:var(--green)}.t-Cancelled,.t-Rejected,.t-OnHold{color:var(--red)}.t-None{color:var(--muted)}
+  .payline{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:20px;padding:14px 18px;border-radius:16px;box-shadow:var(--in);font-weight:600}
   .empty{text-align:center;color:var(--muted);padding:26px!important}
   .row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid rgba(160,168,184,.35)}
   .row:last-child{border:0}.row small{color:var(--muted);display:block}
@@ -192,6 +193,7 @@
         </div>
       </div>
       <div class="tiers" id="tiers"></div>
+      <div class="payline"><span>Target reward payment · <span id="payAmt"></span></span><span class="tag" id="payTag"></span></div>
     </div>
 
     <div class="card">
@@ -200,6 +202,9 @@
       <button class="btn soft" onclick="view('refs')">View all</button>
     </div>
   </div>
+
+  <h2>Target reward payments</h2>
+  <div class="card"><div id="payList"></div></div>
 </section>
 
 <!-- ============ REFERRALS ============ -->
@@ -248,7 +253,7 @@ let token = null, lPhase = 0, sPhase = 0, data = null;
 
 /* ---- talk to the Google Apps Script backend directly ---- */
 // PASTE YOUR APPS SCRIPT WEB APP URL (ends with /exec) BETWEEN THE QUOTES:
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwag8wiBAc4gbHITnNGXKNRmxTX4S1luMGWy6rlGyUs5JMomhje84VY7HyzGiDR3Z2tLw/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyGXwaPxlkOXw0siBhLJ0vW301hvgLkGupkTDq3NBAikyK4UnW6tWeLXW8sOqR_LyD6/exec';
 
 async function api(action, payload) {
   if (!APPS_SCRIPT_URL) throw new Error('Website not connected yet: paste your Apps Script /exec URL into index.html (APPS_SCRIPT_URL).');
@@ -358,6 +363,16 @@ async function loadDash() {
   $('cycleLong').textContent = t.cycleStart + ' – ' + t.cycleEnd + ' (resets every 2 months)';
   $('tiers').innerHTML = t.tiers.map(x => '<div class="tier ' + (x.achieved ? 'done' : '') + '"><b>' + x.watches + '</b>watches<br>+' + inr(x.bonus) + '</div>').join('');
 
+  // target payment status
+  const cp = d.currentPayment, labels = { Paid: 'Paid', Pending: 'Pending', 'On Hold': 'On hold', None: 'No reward yet' };
+  $('payAmt').textContent = inr(cp.reward);
+  $('payTag').textContent = labels[cp.status] || cp.status;
+  $('payTag').className = 'tag t-' + String(cp.status).replace(/\s/g, '');
+  $('payList').innerHTML = d.payments.length ? d.payments.map(x =>
+    '<div class="row"><div><b>' + esc(x.label) + '</b><small>' + (x.status === 'Paid' && x.paidOn ? 'Paid on ' + esc(x.paidOn) : 'Reward ' + inr(x.reward)) + (x.note ? ' · ' + esc(x.note) : '') + '</small></div>' +
+    '<div style="text-align:right"><b>' + inr(x.reward) + '</b><br><span class="tag t-' + esc(x.status.replace(/\s/g, '')) + '">' + esc(x.status) + '</span></div></div>'
+  ).join('') : '<p class="sub">No reward payments recorded yet. Your target rewards appear here once SAMAY records them.</p>';
+
   // recent
   $('recent').innerHTML = d.referrals.length ? d.referrals.slice(0, 5).map(x =>
     '<div class="row"><div><b>' + esc(x.name) + '</b><small>' + esc(x.phone) + ' · ' + esc(x.date) + '</small></div><span class="tag t-' + esc(x.status) + '">' + esc(x.status) + '</span></div>'
@@ -386,3 +401,4 @@ try { token = sessionStorage.getItem('st'); if (token) loadDash().catch(() => {}
 </script>
 </body>
 </html>
+
