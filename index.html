@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#e6e9ef">
+<title>SAMAY ( KOLKATA | INDIA ) Referral Partners</title>
+<style>
+  :root{
+    --bg:#e6e9ef; --light:#ffffff; --dark:#c3c8d2;
+    --ink:#2b3445; --muted:#566074;
+    --blue:#3558d8; --blue2:#2a47b8; --green:#0f7b4f; --amber:#a85a00; --red:#b3261e;
+    --out:9px 9px 18px var(--dark),-9px -9px 18px var(--light);
+    --out-s:5px 5px 10px var(--dark),-5px -5px 10px var(--light);
+    --in:inset 5px 5px 10px var(--dark),inset -5px -5px 10px var(--light);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 "Segoe UI",Roboto,Helvetica,Arial,sans-serif;min-height:100vh;display:flex;flex-direction:column}
+  .hide{display:none!important}
+  main{width:100%;max-width:1020px;margin:0 auto;padding:10px 20px 50px;flex:1}
+  h1{font-size:26px;margin:0}
+  h2{font-size:17px;margin:34px 0 16px}
+  .sub{color:var(--muted);margin:0}
+
+  /* header + nav */
+  header{max-width:1020px;width:100%;margin:0 auto;padding:22px 20px 14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
+  .brand{font-size:18px;font-weight:700}.brand span{color:var(--blue)}
+  .nav{display:flex;gap:10px;flex-wrap:wrap}
+  .nav button{border:0;background:var(--bg);box-shadow:var(--out-s);padding:9px 18px;border-radius:12px;font:inherit;font-weight:600;color:var(--muted);cursor:pointer}
+  .nav button.on{box-shadow:var(--in);color:var(--blue)}
+  .nav button:active{box-shadow:var(--in)}
+  :focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+
+  /* surfaces */
+  .card{background:var(--bg);border-radius:22px;box-shadow:var(--out);padding:26px}
+  .grid{display:grid;gap:26px}
+  .g2{grid-template-columns:repeat(auto-fit,minmax(310px,1fr))}
+  .g4{grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+
+  /* forms */
+  label{display:block;font-weight:600;font-size:13px;margin:16px 0 8px;color:var(--muted)}
+  input{width:100%;padding:13px 16px;border:0;border-radius:14px;background:var(--bg);box-shadow:var(--in);font:inherit;color:var(--ink)}
+  input::placeholder{color:#8a93a3}
+  input[readonly]{opacity:.7}
+  .btn{display:inline-block;margin-top:22px;padding:13px 26px;border:0;border-radius:14px;font:inherit;font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(145deg,#4467e8,var(--blue2));box-shadow:var(--out-s)}
+  .btn:active{box-shadow:inset 4px 4px 8px #1d338c,inset -4px -4px 8px #4f74ff}
+  .btn:disabled{opacity:.6;cursor:wait}
+  .btn.block{width:100%}
+  .btn.soft{background:var(--bg);color:var(--blue);box-shadow:var(--out-s)}
+  .btn.soft:active{box-shadow:var(--in)}
+  .link{background:none;border:0;color:var(--blue);font:inherit;font-weight:600;cursor:pointer;padding:0}
+  .msg{margin-top:16px;padding:12px 16px;border-radius:14px;box-shadow:var(--in);font-size:14px;font-weight:600}
+  .msg.ok{color:var(--green)}.msg.err{color:var(--red)}
+
+  /* auth */
+  .auth{max-width:430px;margin:30px auto}
+  .seg{display:flex;padding:6px;border-radius:16px;box-shadow:var(--in);margin-bottom:8px}
+  .seg button{flex:1;border:0;background:none;padding:11px;border-radius:12px;font:inherit;font-weight:700;color:var(--muted);cursor:pointer}
+  .seg button.on{background:var(--bg);box-shadow:var(--out-s);color:var(--blue)}
+  .auth h1{font-size:22px;text-align:center;margin:10px 0 2px}
+
+  /* hero */
+  .hero{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+  .avatar{width:78px;height:78px;border-radius:50%;box-shadow:var(--out-s);display:grid;place-items:center;font-size:28px;font-weight:700;color:var(--blue);flex:none}
+  .chips{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+  .chip{padding:5px 14px;border-radius:99px;box-shadow:var(--in);font-size:13px;font-weight:600;color:var(--muted)}
+  .hero .grow{flex:1;min-width:220px}
+
+  /* stats */
+  .stat{border-radius:20px;box-shadow:var(--out);padding:20px 22px}
+  .stat small{display:flex;align-items:center;gap:8px;color:var(--muted);font-weight:600}
+  .stat small i{width:10px;height:10px;border-radius:50%;display:inline-block}
+  .stat b{display:block;font-size:28px;margin-top:6px}
+  .c-a i{background:var(--amber)}.c-g i{background:var(--green)}.c-r i{background:var(--red)}.c-b i{background:var(--blue)}
+  .c-a b{color:var(--amber)}.c-g b{color:var(--green)}.c-r b{color:var(--red)}
+
+  /* target */
+  .ringwrap{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+  .ring{width:128px;height:128px;flex:none;position:relative}
+  .ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+  .ring .t{stroke:var(--dark);opacity:.55}
+  .ring .p{stroke:var(--blue);stroke-linecap:round;transition:stroke-dashoffset .8s}
+  .ring div{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+  .ring b{font-size:30px;line-height:1}.ring span{font-size:12px;color:var(--muted)}
+  .tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:14px;margin-top:22px}
+  .tier{border-radius:16px;padding:12px 8px;text-align:center;box-shadow:var(--in);font-size:13px;color:var(--muted)}
+  .tier b{display:block;font-size:16px;color:var(--ink)}
+  .tier.done{background:linear-gradient(145deg,#4467e8,var(--blue2));box-shadow:var(--out-s);color:#e8edff}
+  .tier.done b{color:#fff}
+
+  /* lists / tables */
+  .tw{overflow-x:auto;border-radius:22px;box-shadow:var(--out);padding:8px 10px}
+  table{border-collapse:collapse;width:100%;min-width:640px}
+  th,td{padding:14px;text-align:left;white-space:nowrap;border-bottom:1px solid rgba(160,168,184,.35)}
+  th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+  tr:last-child td{border:0}.r{text-align:right}
+  .tag{padding:4px 12px;border-radius:99px;font-size:12px;font-weight:700;box-shadow:var(--in)}
+  .t-Pending{color:var(--amber)}.t-Received,.t-Approved{color:var(--green)}.t-Cancelled,.t-Rejected{color:var(--red)}
+  .empty{text-align:center;color:var(--muted);padding:26px!important}
+  .row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid rgba(160,168,184,.35)}
+  .row:last-child{border:0}.row small{color:var(--muted);display:block}
+
+  /* account */
+  .prof{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px 30px}
+  .prof small{display:block;color:var(--muted);font-weight:600}
+  .inline{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end}
+  .inline>div{flex:1;min-width:220px}.inline .btn{margin:0}
+
+  footer{text-align:center;padding:22px;color:var(--muted);font-size:13px}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand"><span>SAMAY</span> ( KOLKATA | INDIA ) Referral Partners</div>
+  <nav class="nav hide" id="nav">
+    <button id="n-home" class="on" onclick="view('home')">Home</button>
+    <button id="n-refs" onclick="view('refs')">Referrals</button>
+    <button id="n-acc" onclick="view('acc')">Account</button>
+    <button onclick="doLogout()">Log out</button>
+  </nav>
+</header>
+
+<main>
+
+<!-- ============ LOGIN / SIGN UP ============ -->
+<section id="auth" class="card auth">
+  <h1>Partner Portal</h1>
+  <p class="sub" style="text-align:center;margin-bottom:18px">Sign in or join the SAMAY referral program</p>
+  <div class="seg" id="seg">
+    <button class="on" id="tLogin" onclick="tab('login')">Log in</button>
+    <button id="tSignup" onclick="tab('signup')">Become a partner</button>
+  </div>
+
+  <div id="loginForm">
+    <label for="lEmail">Email</label>
+    <input id="lEmail" type="email" autocomplete="email" placeholder="you@example.com">
+    <div id="lOtpBox" class="hide">
+      <label for="lOtp">Enter the 6-digit OTP sent to your email</label>
+      <input id="lOtp" inputmode="numeric" maxlength="6">
+    </div>
+    <button class="btn block" id="lBtn" onclick="loginStep()">Send OTP</button>
+  </div>
+
+  <div id="signupForm" class="hide">
+    <div id="sFields">
+      <label for="sName">Full name</label><input id="sName" autocomplete="name">
+      <label for="sPhone">Phone number</label><input id="sPhone" type="tel" inputmode="tel" autocomplete="tel">
+      <label for="sEmail">Email</label><input id="sEmail" type="email" autocomplete="email">
+      <label for="sDob">Date of birth</label><input id="sDob" type="date">
+    </div>
+    <div id="sOtpBox" class="hide">
+      <label for="sOtp">Enter the 6-digit OTP sent to your email</label>
+      <input id="sOtp" inputmode="numeric" maxlength="6">
+    </div>
+    <button class="btn block" id="sBtn" onclick="signupStep()">Send OTP</button>
+  </div>
+  <div id="authMsg" aria-live="polite"></div>
+</section>
+
+<!-- ============ HOME ============ -->
+<section id="home" class="hide">
+  <div class="card hero">
+    <div class="avatar" id="hAvatar"></div>
+    <div class="grow">
+      <p class="sub" id="hGreet"></p>
+      <h1 id="hName"></h1>
+      <div class="chips"><span class="chip" id="hId"></span><span class="chip" id="hCycle"></span></div>
+    </div>
+  </div>
+
+  <div class="grid g4" style="margin-top:28px">
+    <div class="stat c-b"><small><i></i>Total referrals</small><b id="sCount">0</b></div>
+    <div class="stat c-a"><small><i></i>Pending commission</small><b id="sPend">₹0</b></div>
+    <div class="stat c-g"><small><i></i>Received commission</small><b id="sRec">₹0</b></div>
+    <div class="stat c-r"><small><i></i>Cancelled commission</small><b id="sCan">₹0</b></div>
+  </div>
+
+  <div class="grid g2" style="margin-top:34px">
+    <div class="card">
+      <h2 style="margin-top:0">Target &amp; rewards</h2>
+      <div class="ringwrap">
+        <div class="ring">
+          <svg viewBox="0 0 120 120"><circle class="t" cx="60" cy="60" r="52" fill="none" stroke-width="11"/><circle class="p" id="ringP" cx="60" cy="60" r="52" fill="none" stroke-width="11" stroke-dasharray="326.7" stroke-dashoffset="326.7"/></svg>
+          <div><b id="wSold">0</b><span>watches</span></div>
+        </div>
+        <div>
+          <b id="nextHint" style="display:block;font-size:16px"></b>
+          <p class="sub" id="bonusLine" style="margin-top:6px"></p>
+          <p class="sub" id="cycleLong" style="margin-top:6px;font-size:13px"></p>
+        </div>
+      </div>
+      <div class="tiers" id="tiers"></div>
+    </div>
+
+    <div class="card">
+      <h2 style="margin-top:0">Recent referrals</h2>
+      <div id="recent"></div>
+      <button class="btn soft" onclick="view('refs')">View all</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ REFERRALS ============ -->
+<section id="refs" class="hide">
+  <h1>Referrals</h1>
+  <p class="sub">Your referrals, as recorded by SAMAY. This list is read-only.</p>
+  <div class="tw" style="margin-top:24px"><table>
+    <thead><tr><th>Referral</th><th>Contact number</th><th>Date</th><th class="r">Watches</th><th class="r">Commission</th><th>Status</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table></div>
+</section>
+
+<!-- ============ ACCOUNT ============ -->
+<section id="acc" class="hide">
+  <h1>My account</h1>
+  <p class="sub">Your registered details.</p>
+  <div class="card" style="margin-top:24px">
+    <div class="prof">
+      <div><small>Partner ID</small><b id="aId"></b></div>
+      <div><small>Account status</small><b id="aStatus"></b></div>
+      <div><small>Phone number</small><b id="aPhone"></b></div>
+      <div><small>Email</small><b id="aEmail"></b></div>
+      <div><small>Date of birth</small><b id="aDob"></b></div>
+      <div><small>Partner since</small><b id="aSince"></b></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:26px">
+    <h2 style="margin-top:0">Edit your name</h2>
+    <div class="inline">
+      <div><label for="aName" style="margin-top:0">Full name</label><input id="aName" maxlength="60"></div>
+      <button class="btn" id="aBtn" onclick="saveName()">Save name</button>
+    </div>
+    <div id="aMsg" aria-live="polite"></div>
+    <p class="sub" style="margin-top:16px;font-size:13px">To change your phone, email or date of birth, please contact SAMAY.</p>
+  </div>
+</section>
+
+</main>
+<footer>© <span id="yr"></span> SAMAY ( KOLKATA | INDIA ). All rights reserved.</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const inr = n => '₹' + Number(n).toLocaleString('en-IN');
+let token = null, lPhase = 0, sPhase = 0, data = null;
+
+/* ---- talk to the Vercel API ---- */
+async function api(action, payload) {
+  let res, j;
+  try {
+    res = await fetch('/api', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(Object.assign({ action, token }, payload || {})) });
+    if (res.status === 404) throw new Error('API not found (404). The /api folder was not deployed on Vercel.');
+    j = await res.json();
+  } catch (e) { throw new Error(e.message.indexOf('API not found') === 0 ? e.message : 'Could not reach the server. Please try again.'); }
+  if (!j.ok) throw new Error(j.error || 'Something went wrong.');
+  return j.data;
+}
+function note(id, text, ok) { $(id).innerHTML = text ? '<div class="msg ' + (ok ? 'ok' : 'err') + '">' + esc(text) + '</div>' : ''; }
+async function run(btn, label, msgId, fn) {
+  btn.disabled = true; btn.textContent = 'Please wait…';
+  try { await fn(); } catch (e) {
+    if (e.message === 'SESSION') return expire();
+    note(msgId, e.message);
+  }
+  btn.disabled = false; btn.textContent = label();
+}
+function tab(t) {
+  $('tLogin').classList.toggle('on', t === 'login'); $('tSignup').classList.toggle('on', t === 'signup');
+  $('loginForm').classList.toggle('hide', t !== 'login'); $('signupForm').classList.toggle('hide', t !== 'signup'); note('authMsg', '');
+}
+
+/* ---- log in ---- */
+function loginStep() {
+  run($('lBtn'), () => lPhase ? 'Verify and log in' : 'Send OTP', 'authMsg', async () => {
+    const email = $('lEmail').value;
+    if (!lPhase) {
+      await api('loginSendOtp', { email });
+      lPhase = 1; $('lOtpBox').classList.remove('hide'); $('lEmail').readOnly = true; $('lOtp').focus();
+      note('authMsg', 'OTP sent to ' + email + '.', true);
+    } else {
+      token = await api('loginVerify', { email, otp: $('lOtp').value });
+      try { sessionStorage.setItem('st', token); } catch (e) {}
+      await loadDash();
+    }
+  });
+}
+
+/* ---- sign up ---- */
+function signupStep() {
+  run($('sBtn'), () => sPhase ? 'Verify and sign up' : 'Send OTP', 'authMsg', async () => {
+    const email = $('sEmail').value;
+    if (!sPhase) {
+      await api('signupSendOtp', { name: $('sName').value, phone: $('sPhone').value, email, dob: $('sDob').value });
+      sPhase = 1; $('sOtpBox').classList.remove('hide');
+      document.querySelectorAll('#sFields input').forEach(i => i.readOnly = true);
+      note('authMsg', 'OTP sent to ' + email + '.', true);
+    } else {
+      await api('signupVerify', { email, otp: $('sOtp').value });
+      $('signupForm').classList.add('hide'); $('seg').classList.add('hide');
+      note('authMsg', 'Email verified. Your request has been sent to SAMAY. You can log in once it is approved.', true);
+    }
+  });
+}
+
+/* ---- session ---- */
+function expire() {
+  token = null; try { sessionStorage.removeItem('st'); } catch (e) {}
+  ['home', 'refs', 'acc', 'nav'].forEach(i => $(i).classList.add('hide'));
+  $('auth').classList.remove('hide'); note('authMsg', 'Session expired. Please log in again.');
+}
+async function doLogout() {
+  try { if (token) await api('logout'); } catch (e) {}
+  try { sessionStorage.removeItem('st'); } catch (e) {} location.reload();
+}
+function view(v) {
+  ['home', 'refs', 'acc'].forEach(i => { $(i).classList.toggle('hide', i !== v); $('n-' + i).classList.toggle('on', i === v); });
+  window.scrollTo(0, 0);
+}
+
+/* ---- load + draw dashboard ---- */
+function rowHtml(x) {
+  return '<tr><td>' + esc(x.name) + '</td><td>' + esc(x.phone) + '</td><td>' + esc(x.date) + '</td><td class="r">' + x.watches +
+    '</td><td class="r">' + inr(x.commission) + '</td><td><span class="tag t-' + esc(x.status) + '">' + esc(x.status) + '</span></td></tr>';
+}
+async function loadDash() {
+  try { data = await api('getDashboard'); }
+  catch (e) { if (e.message === 'SESSION') return expire(); throw e; }
+  const d = data, a = d.account, t = d.target;
+
+  $('auth').classList.add('hide'); $('nav').classList.remove('hide');
+  const cur = ['home', 'refs', 'acc'].find(i => !$(i).classList.contains('hide')) || 'home'; view(cur);
+
+  // hero
+  const h = new Date().getHours();
+  $('hGreet').textContent = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+  $('hName').textContent = d.name;
+  $('hAvatar').textContent = d.name.split(' ').filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join('');
+  $('hId').textContent = 'Partner ID · ' + a.id;
+  $('hCycle').textContent = t.daysLeft + ' days left in this cycle';
+
+  // stats
+  $('sCount').textContent = d.count; $('sPend').textContent = inr(d.totals.Pending);
+  $('sRec').textContent = inr(d.totals.Received); $('sCan').textContent = inr(d.totals.Cancelled);
+
+  // target ring
+  const nxt = t.tiers.find(x => !x.achieved);
+  const goal = nxt ? nxt.watches : (t.tiers.length ? t.tiers[t.tiers.length - 1].watches : 1);
+  $('wSold').textContent = t.watches;
+  $('ringP').style.strokeDashoffset = 326.7 * (1 - Math.min(1, t.watches / goal));
+  $('nextHint').textContent = nxt ? (nxt.watches - t.watches) + ' more watches to earn +' + inr(nxt.bonus) : 'Top target reached. Well done!';
+  $('bonusLine').textContent = t.bonusEarned ? 'Reward earned this cycle: ' + inr(t.bonusEarned) : 'No reward earned yet this cycle.';
+  $('cycleLong').textContent = t.cycleStart + ' – ' + t.cycleEnd + ' (resets every 2 months)';
+  $('tiers').innerHTML = t.tiers.map(x => '<div class="tier ' + (x.achieved ? 'done' : '') + '"><b>' + x.watches + '</b>watches<br>+' + inr(x.bonus) + '</div>').join('');
+
+  // recent
+  $('recent').innerHTML = d.referrals.length ? d.referrals.slice(0, 5).map(x =>
+    '<div class="row"><div><b>' + esc(x.name) + '</b><small>' + esc(x.phone) + ' · ' + esc(x.date) + '</small></div><span class="tag t-' + esc(x.status) + '">' + esc(x.status) + '</span></div>'
+  ).join('') : '<p class="sub">No referrals recorded yet.</p>';
+
+  // referrals page
+  $('rows').innerHTML = d.referrals.length ? d.referrals.map(rowHtml).join('') : '<tr><td colspan="6" class="empty">No referrals yet.</td></tr>';
+
+  // account
+  $('aId').textContent = a.id; $('aStatus').textContent = a.status; $('aPhone').textContent = a.phone;
+  $('aEmail').textContent = a.email; $('aDob').textContent = a.dob; $('aSince').textContent = a.since || '-';
+  if (document.activeElement !== $('aName')) $('aName').value = a.name;
+}
+
+/* ---- edit name ---- */
+function saveName() {
+  run($('aBtn'), () => 'Save name', 'aMsg', async () => {
+    await api('updateName', { name: $('aName').value });
+    note('aMsg', 'Your name has been updated.', true);
+    await loadDash();
+  });
+}
+
+$('yr').textContent = new Date().getFullYear();
+try { token = sessionStorage.getItem('st'); if (token) loadDash().catch(() => {}); } catch (e) {}
+</script>
+</body>
+</html>
