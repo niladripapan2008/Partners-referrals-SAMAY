@@ -108,17 +108,45 @@
   .inline>div{flex:1;min-width:220px}.inline .btn{margin:0}
 
   footer{text-align:center;padding:22px;color:var(--muted);font-size:13px}
-  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+  /* page transitions, back button */
+  .has-tok #auth{display:none}
+  .enter{animation:rise .5s ease both}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .auth.leaving{opacity:0;transform:scale(.97);transition:all .35s ease}
+  .backbtn{display:inline-flex;align-items:center;gap:8px;border:0;background:var(--bg);box-shadow:var(--out-s);padding:10px 20px;border-radius:12px;font:inherit;font-weight:700;color:var(--blue);cursor:pointer;margin:14px 0 22px}
+  .backbtn:active{box-shadow:var(--in)}
+  .boot{max-width:430px;margin:60px auto;text-align:center}
+
+  /* Continue with Google */
+  .or{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:13px;font-weight:600;margin:24px 0 16px}
+  .or::before,.or::after{content:"";flex:1;height:3px;border-radius:3px;box-shadow:var(--in)}
+  #gBtn{display:flex;justify-content:center;min-height:44px}
+
+  /* OTP: 6 boxes -> round dots -> loading wave -> success */
+  .otp{display:flex;gap:10px;align-items:center;justify-content:space-between;min-height:58px;margin-top:2px}
+  .ob{flex:1 1 0;min-width:0;max-width:54px;height:58px;padding:0;text-align:center;font-size:22px;font-weight:700;border-radius:14px;border:0;background:var(--bg);box-shadow:var(--in);color:var(--ink);caret-color:var(--blue);transition:all .5s cubic-bezier(.4,0,.2,1)}
+  .otp.verifying,.otp.success{justify-content:center;gap:16px}
+  .otp.verifying .ob,.otp.success .ob{flex:0 0 18px;width:18px;max-width:18px;height:18px;border-radius:50%;font-size:0;color:transparent;caret-color:transparent;background:var(--blue);box-shadow:var(--out-s);pointer-events:none}
+  .otp .ob:nth-child(2){--d:.1s}.otp .ob:nth-child(3){--d:.2s}.otp .ob:nth-child(4){--d:.3s}.otp .ob:nth-child(5){--d:.4s}.otp .ob:nth-child(6){--d:.5s}
+  .otp.verifying .ob{animation:wave 1.1s ease-in-out infinite;animation-delay:var(--d,0s)}
+  .otp.success .ob{background:var(--green);animation:pop .55s ease both;animation-delay:var(--d,0s)}
+  .otp.error .ob{color:var(--red);animation:shake .4s}
+  @keyframes wave{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-14px)}}
+  @keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.7)}100%{transform:scale(1)}}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;animation-duration:.01ms!important;animation-iteration-count:1!important;animation-delay:0s!important}}
 </style>
+<script>try{if(localStorage.getItem('st'))document.documentElement.className='has-tok'}catch(e){}</script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 
 <header>
   <div class="brand"><span>SAMAY</span> ( KOLKATA | INDIA ) Referral Partners</div>
   <nav class="nav hide" id="nav">
-    <button id="n-home" class="on" onclick="view('home')">Home</button>
-    <button id="n-refs" onclick="view('refs')">Referrals</button>
-    <button id="n-acc" onclick="view('acc')">Account</button>
+    <button id="n-home" class="on" onclick="go('home')">Home</button>
+    <button id="n-refs" onclick="go('refs')">Referrals</button>
+    <button id="n-acc" onclick="go('acc')">Account</button>
     <button onclick="doLogout()">Log out</button>
   </nav>
 </header>
@@ -135,13 +163,20 @@
   </div>
 
   <div id="loginForm">
-    <label for="lEmail">Email</label>
-    <input id="lEmail" type="email" autocomplete="email" placeholder="you@example.com">
-    <div id="lOtpBox" class="hide">
-      <label for="lOtp">Enter the 6-digit OTP sent to your email</label>
-      <input id="lOtp" inputmode="numeric" maxlength="6">
+    <div id="loginMain">
+      <label for="lEmail">Email</label>
+      <input id="lEmail" type="email" autocomplete="email" placeholder="you@example.com">
+      <div id="lOtpBox" class="hide">
+        <label>Enter the 6-digit OTP sent to your email</label>
+        <div class="otp" id="lOtp" role="group" aria-label="6-digit OTP"></div>
+      </div>
+      <button class="btn block" id="lBtn" onclick="loginStep()">Send OTP</button>
+      <div id="gWrap">
+        <div class="or">or</div>
+        <div id="gBtn"></div>
+      </div>
     </div>
-    <button class="btn block" id="lBtn" onclick="loginStep()">Send OTP</button>
+    <div class="otp verifying hide" id="gDots" role="status" aria-label="Signing in"><span class="ob"></span><span class="ob"></span><span class="ob"></span><span class="ob"></span><span class="ob"></span><span class="ob"></span></div>
   </div>
 
   <div id="signupForm" class="hide">
@@ -152,12 +187,21 @@
       <label for="sDob">Date of birth</label><input id="sDob" type="date">
     </div>
     <div id="sOtpBox" class="hide">
-      <label for="sOtp">Enter the 6-digit OTP sent to your email</label>
-      <input id="sOtp" inputmode="numeric" maxlength="6">
+      <label>Enter the 6-digit OTP sent to your email</label>
+      <div class="otp" id="sOtp" role="group" aria-label="6-digit OTP"></div>
     </div>
     <button class="btn block" id="sBtn" onclick="signupStep()">Send OTP</button>
   </div>
   <div id="authMsg" aria-live="polite"></div>
+</section>
+
+<!-- ============ LOADING (after login / on refresh) ============ -->
+<section id="boot" class="hide">
+  <div class="card boot">
+    <div id="bootDots" class="otp verifying" aria-hidden="true"><span class="ob"></span><span class="ob"></span><span class="ob"></span><span class="ob"></span><span class="ob"></span><span class="ob"></span></div>
+    <p class="sub" style="margin-top:22px" id="bootText">Loading your dashboard…</p>
+    <div id="bootErr" class="hide"><div class="msg err" id="bootMsg"></div><button class="btn" onclick="bootLoad(bootView)">Try again</button></div>
+  </div>
 </section>
 
 <!-- ============ HOME ============ -->
@@ -199,7 +243,7 @@
     <div class="card">
       <h2 style="margin-top:0">Recent referrals</h2>
       <div id="recent"></div>
-      <button class="btn soft" onclick="view('refs')">View all</button>
+      <button class="btn soft" onclick="go('refs')">View all</button>
     </div>
   </div>
 
@@ -209,6 +253,7 @@
 
 <!-- ============ REFERRALS ============ -->
 <section id="refs" class="hide">
+  <button class="backbtn" onclick="go('home')">← Back to Home</button>
   <h1>Referrals</h1>
   <p class="sub">Your referrals, as recorded by SAMAY. This list is read-only.</p>
   <div class="tw" style="margin-top:24px"><table>
@@ -219,6 +264,7 @@
 
 <!-- ============ ACCOUNT ============ -->
 <section id="acc" class="hide">
+  <button class="backbtn" onclick="go('home')">← Back to Home</button>
   <h1>My account</h1>
   <p class="sub">Your registered details.</p>
   <div class="card" style="margin-top:24px">
@@ -250,10 +296,13 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const inr = n => '₹' + Number(n).toLocaleString('en-IN');
 let token = null, lPhase = 0, sPhase = 0, data = null;
+let busy = false, inPortal = false, curView = null, bootView = 'home';
 
 /* ---- talk to the Google Apps Script backend directly ---- */
 // PASTE YOUR APPS SCRIPT WEB APP URL (ends with /exec) BETWEEN THE QUOTES:
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyGXwaPxlkOXw0siBhLJ0vW301hvgLkGupkTDq3NBAikyK4UnW6tWeLXW8sOqR_LyD6/exec';
+// PASTE YOUR GOOGLE OAUTH CLIENT ID (ends with .apps.googleusercontent.com) TO ENABLE "Continue with Google":
+const GOOGLE_CLIENT_ID = '200409427268-1p8mmke5k5v34bi7gms89slh7ane0ofm.apps.googleusercontent.com';
 
 async function api(action, payload) {
   if (!APPS_SCRIPT_URL) throw new Error('Website not connected yet: paste your Apps Script /exec URL into index.html (APPS_SCRIPT_URL).');
@@ -280,52 +329,205 @@ function tab(t) {
   $('loginForm').classList.toggle('hide', t !== 'login'); $('signupForm').classList.toggle('hide', t !== 'signup'); note('authMsg', '');
 }
 
-/* ---- log in ---- */
+/* ---- small helpers ---- */
+const wait = ms => new Promise(r => setTimeout(r, ms));
+function saveTok(t) { try { localStorage.setItem('st', t); } catch (e) {} }
+function loadTok() { try { return localStorage.getItem('st'); } catch (e) { return null; } }
+function clearTok() { try { localStorage.removeItem('st'); sessionStorage.removeItem('st'); } catch (e) {} }
+
+/* ---- 6-box OTP input (type, paste, auto-advance, auto-submit) ---- */
+function makeOtp(el, onDone) {
+  const len = 6, boxes = [];
+  el.innerHTML = '';
+  for (let i = 0; i < len; i++) {
+    const b = document.createElement('input');
+    b.className = 'ob'; b.type = 'text'; b.inputMode = 'numeric'; b.maxLength = 1;
+    b.autocomplete = i === 0 ? 'one-time-code' : 'off';
+    b.setAttribute('aria-label', 'OTP digit ' + (i + 1));
+    boxes.push(b); el.appendChild(b);
+  }
+  const get = () => boxes.map(b => b.value).join('');
+  const done = () => { if (get().length === len) onDone(get()); };
+  boxes.forEach((b, i) => {
+    b.addEventListener('input', () => {
+      b.value = b.value.replace(/\D/g, '').slice(-1);
+      if (b.value && i < len - 1) boxes[i + 1].focus();
+      done();
+    });
+    b.addEventListener('keydown', e => {
+      if (e.key === 'Backspace' && !b.value && i > 0) { boxes[i - 1].focus(); boxes[i - 1].value = ''; }
+      else if (e.key === 'ArrowLeft' && i > 0) boxes[i - 1].focus();
+      else if (e.key === 'ArrowRight' && i < len - 1) boxes[i + 1].focus();
+    });
+    b.addEventListener('paste', e => {
+      e.preventDefault();
+      const t = ((e.clipboardData || window.clipboardData).getData('text') || '').replace(/\D/g, '').slice(0, len);
+      t.split('').forEach((c, k) => { boxes[k].value = c; });
+      boxes[Math.min(t.length, len - 1)].focus(); done();
+    });
+    b.addEventListener('focus', () => b.select());
+  });
+  return {
+    get, focus: () => boxes[0].focus(),
+    clear: () => boxes.forEach(b => { b.value = ''; }),
+    state(s) {                       // '' | 'verifying' | 'success' | 'error'
+      el.classList.remove('verifying', 'success', 'error'); if (s) el.classList.add(s);
+      const lock = s === 'verifying' || s === 'success';
+      boxes.forEach(b => { b.readOnly = lock; });
+      if (lock && document.activeElement) document.activeElement.blur();
+    }
+  };
+}
+const otpL = makeOtp($('lOtp'), code => submitLogin(code));
+const otpS = makeOtp($('sOtp'), code => submitSignup(code));
+
+// boxes -> round dots -> wave while checking -> green pop -> next step
+async function otpFlow(otp, btn, call, onSuccess) {
+  if (busy) return; busy = true;
+  note('authMsg', ''); btn.disabled = true; otp.state('verifying');
+  try {
+    const r = await Promise.allSettled([call(), wait(1200)]);
+    if (r[0].status === 'rejected') throw r[0].reason;
+    otp.state('success'); await wait(800);
+    await onSuccess(r[0].value);
+  } catch (e) {
+    otp.state('error'); note('authMsg', e.message); await wait(550);
+    otp.state(''); otp.clear(); otp.focus(); btn.disabled = false;
+  }
+  busy = false;
+}
+
+/* ---- log in (email OTP) ---- */
 function loginStep() {
+  if (lPhase) { const c = otpL.get(); return c.length < 6 ? note('authMsg', 'Please enter all 6 digits.') : submitLogin(c); }
   run($('lBtn'), () => lPhase ? 'Verify and log in' : 'Send OTP', 'authMsg', async () => {
     const email = $('lEmail').value;
-    if (!lPhase) {
-      await api('loginSendOtp', { email });
-      lPhase = 1; $('lOtpBox').classList.remove('hide'); $('lEmail').readOnly = true; $('lOtp').focus();
-      note('authMsg', 'OTP sent to ' + email + '.', true);
-    } else {
-      token = await api('loginVerify', { email, otp: $('lOtp').value });
-      try { sessionStorage.setItem('st', token); } catch (e) {}
-      await loadDash();
-    }
+    await api('loginSendOtp', { email });
+    lPhase = 1; $('lOtpBox').classList.remove('hide'); $('gWrap').classList.add('hide');
+    $('lEmail').readOnly = true; otpL.focus();
+    note('authMsg', 'OTP sent to ' + email + '.', true);
   });
+}
+function submitLogin(code) {
+  return otpFlow(otpL, $('lBtn'), () => api('loginVerify', { email: $('lEmail').value, otp: code }),
+    t => { token = t; saveTok(t); return enterFromLogin(); });
+}
+async function enterFromLogin() {
+  $('auth').classList.add('leaving'); await wait(350);
+  $('auth').classList.add('hide'); $('auth').classList.remove('leaving');
+  await bootLoad('home');
+}
+
+/* ---- log in with Google ---- */
+let gInit = false;
+function initGoogle() {
+  if (gInit || !GOOGLE_CLIENT_ID || !window.google || !google.accounts || !google.accounts.id) return;
+  gInit = true;
+  google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: onGoogle });
+  google.accounts.id.renderButton($('gBtn'), { type: 'standard', theme: 'outline', size: 'large', shape: 'pill',
+    text: 'continue_with', logo_alignment: 'left', width: Math.min(360, $('loginForm').clientWidth || 340) });
+}
+window.onGoogleLibraryLoad = initGoogle;
+async function onGoogle(resp) {
+  if (busy) return; busy = true; note('authMsg', '');
+  const dots = $('gDots');
+  $('loginMain').classList.add('hide'); dots.classList.remove('hide');
+  try {
+    const r = await Promise.allSettled([api('loginGoogle', { credential: resp.credential }), wait(1200)]);
+    if (r[0].status === 'rejected') throw r[0].reason;
+    token = r[0].value; saveTok(token);
+    dots.classList.remove('verifying'); dots.classList.add('success'); await wait(800);
+    await enterFromLogin();
+  } catch (e) {
+    dots.classList.add('hide'); dots.classList.remove('success'); dots.classList.add('verifying');
+    $('loginMain').classList.remove('hide'); note('authMsg', e.message);
+  }
+  busy = false;
 }
 
 /* ---- sign up ---- */
 function signupStep() {
+  if (sPhase) { const c = otpS.get(); return c.length < 6 ? note('authMsg', 'Please enter all 6 digits.') : submitSignup(c); }
   run($('sBtn'), () => sPhase ? 'Verify and sign up' : 'Send OTP', 'authMsg', async () => {
     const email = $('sEmail').value;
-    if (!sPhase) {
-      await api('signupSendOtp', { name: $('sName').value, phone: $('sPhone').value, email, dob: $('sDob').value });
-      sPhase = 1; $('sOtpBox').classList.remove('hide');
-      document.querySelectorAll('#sFields input').forEach(i => i.readOnly = true);
-      note('authMsg', 'OTP sent to ' + email + '.', true);
-    } else {
-      await api('signupVerify', { email, otp: $('sOtp').value });
-      $('signupForm').classList.add('hide'); $('seg').classList.add('hide');
-      note('authMsg', 'Email verified. Your request has been sent to SAMAY. You can log in once it is approved.', true);
-    }
+    await api('signupSendOtp', { name: $('sName').value, phone: $('sPhone').value, email, dob: $('sDob').value });
+    sPhase = 1; $('sOtpBox').classList.remove('hide');
+    document.querySelectorAll('#sFields input').forEach(i => { i.readOnly = true; });
+    otpS.focus(); note('authMsg', 'OTP sent to ' + email + '.', true);
+  });
+}
+function submitSignup(code) {
+  return otpFlow(otpS, $('sBtn'), () => api('signupVerify', { email: $('sEmail').value, otp: code }), () => {
+    $('signupForm').classList.add('hide'); $('seg').classList.add('hide');
+    note('authMsg', 'Email verified. Your request has been sent to SAMAY. You can log in once it is approved.', true);
   });
 }
 
-/* ---- session ---- */
-function expire() {
-  token = null; try { sessionStorage.removeItem('st'); } catch (e) {}
-  ['home', 'refs', 'acc', 'nav'].forEach(i => $(i).classList.add('hide'));
-  $('auth').classList.remove('hide'); note('authMsg', 'Session expired. Please log in again.');
+/* ---- pages: refresh keeps you here, Back never leaves the site ---- */
+const HASH = { home: '#home', refs: '#referrals', acc: '#account' };
+const fromHash = () => location.hash === '#referrals' ? 'refs' : location.hash === '#account' ? 'acc' : 'home';
+
+function show(v) {
+  curView = v;
+  ['home', 'refs', 'acc'].forEach(i => { $(i).classList.toggle('hide', i !== v); $('n-' + i).classList.toggle('on', i === v); });
+  const el = $(v); el.classList.remove('enter'); void el.offsetWidth; el.classList.add('enter');
+  window.scrollTo(0, 0);
 }
+function go(v) {                       // used by the menu and the "Back to Home" buttons
+  if (v === curView) return;
+  history.pushState({ v }, '', HASH[v]); show(v);
+}
+window.addEventListener('popstate', e => {
+  if (!inPortal) return;
+  if (e.state && e.state.guard) { history.pushState({ v: 'home' }, '', HASH.home); show('home'); return; }   // stay on the site
+  show(fromHash());
+});
+function enterPortal(v) {
+  inPortal = true; $('auth').classList.add('hide'); $('nav').classList.remove('hide');
+  const st = history.state;
+  if (st && st.v) history.replaceState({ v }, '', HASH[v]);
+  else {
+    if (!(st && st.guard)) history.replaceState({ guard: true }, '', location.pathname + location.search);
+    history.pushState({ v }, '', HASH[v]);
+  }
+  show(v);
+}
+
+/* ---- session ---- */
+function resetAuth() {
+  lPhase = 0; sPhase = 0; busy = false;
+  $('lEmail').readOnly = false; $('lEmail').value = '';
+  $('lOtpBox').classList.add('hide'); otpL.state(''); otpL.clear();
+  $('lBtn').disabled = false; $('lBtn').textContent = 'Send OTP';
+  $('loginMain').classList.remove('hide');
+  $('gDots').classList.add('hide'); $('gDots').classList.remove('success'); $('gDots').classList.add('verifying');
+  if (GOOGLE_CLIENT_ID) $('gWrap').classList.remove('hide');
+  tab('login');
+}
+function toLogin(msg) {
+  token = null; clearTok(); inPortal = false; data = null;
+  document.documentElement.classList.remove('has-tok');
+  ['home', 'refs', 'acc', 'nav', 'boot'].forEach(i => $(i).classList.add('hide'));
+  $('auth').classList.remove('hide'); resetAuth();
+  if (msg) note('authMsg', msg);
+  window.scrollTo(0, 0);
+}
+function expire() { toLogin('Session expired. Please log in again.'); }
 async function doLogout() {
   try { if (token) await api('logout'); } catch (e) {}
-  try { sessionStorage.removeItem('st'); } catch (e) {} location.reload();
+  history.replaceState(null, '', location.pathname + location.search);
+  toLogin('');
 }
-function view(v) {
-  ['home', 'refs', 'acc'].forEach(i => { $(i).classList.toggle('hide', i !== v); $('n-' + i).classList.toggle('on', i === v); });
-  window.scrollTo(0, 0);
+
+// shows the loading dots, loads the dashboard, then opens the page (with a Try again button if the network fails)
+async function bootLoad(v) {
+  bootView = v || 'home';
+  $('boot').classList.remove('hide'); $('bootDots').classList.remove('hide'); $('bootText').classList.remove('hide'); $('bootErr').classList.add('hide');
+  try { await loadDash(bootView); $('boot').classList.add('hide'); }
+  catch (e) {
+    $('bootDots').classList.add('hide'); $('bootText').classList.add('hide');
+    $('bootMsg').textContent = e.message; $('bootErr').classList.remove('hide');
+  }
 }
 
 /* ---- load + draw dashboard ---- */
@@ -333,13 +535,12 @@ function rowHtml(x) {
   return '<tr><td>' + esc(x.name) + '</td><td>' + esc(x.phone) + '</td><td>' + esc(x.date) + '</td><td class="r">' + x.watches +
     '</td><td class="r">' + inr(x.commission) + '</td><td><span class="tag t-' + esc(x.status) + '">' + esc(x.status) + '</span></td></tr>';
 }
-async function loadDash() {
+async function loadDash(startView) {
   try { data = await api('getDashboard'); }
   catch (e) { if (e.message === 'SESSION') return expire(); throw e; }
   const d = data, a = d.account, t = d.target;
 
-  $('auth').classList.add('hide'); $('nav').classList.remove('hide');
-  const cur = ['home', 'refs', 'acc'].find(i => !$(i).classList.contains('hide')) || 'home'; view(cur);
+  if (!inPortal) enterPortal(startView || 'home');
 
   // hero
   const h = new Date().getHours();
@@ -397,8 +598,10 @@ function saveName() {
 }
 
 $('yr').textContent = new Date().getFullYear();
-try { token = sessionStorage.getItem('st'); if (token) loadDash().catch(() => {}); } catch (e) {}
+if (!GOOGLE_CLIENT_ID) $('gWrap').classList.add('hide');
+initGoogle();
+token = loadTok();
+if (token) { $('auth').classList.add('hide'); bootLoad(fromHash()); }   // refresh = stay signed in, same page
 </script>
 </body>
 </html>
-
